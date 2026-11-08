@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crocodile Club | سجل تقييم السباح</title>
+<style>
+:root{--gold:#d6a21a;--dark:#171318;--bg:#f5f3f0;--ink:#28232a;--line:#e6dfd3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+header{background:var(--dark);color:#fff;border-bottom:4px solid var(--gold);padding:20px;text-align:center}
+header h1{color:#f1bd35;margin:0 0 7px;font-size:24px}header p{margin:0;color:#ddd}
+main{max-width:1050px;margin:22px auto;padding:0 14px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button,.btn{border:0;border-radius:9px;padding:11px 15px;background:var(--dark);color:#fff;font-weight:bold;cursor:pointer}
+button.gold{background:#bd8610}button.light{background:#eee8dc;color:#302719}button.red{background:#a92c2c}
+.tab.active{background:var(--gold);color:#211a0b}
+.panel,.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 3px 14px #1713180a}
+h2,h3{margin-top:0}h2{font-size:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+label{display:block;font-weight:bold;margin-bottom:6px}input,select,textarea{width:100%;padding:11px;border:1px solid #d8d0c4;border-radius:8px;font:inherit;background:#fff}
+textarea{min-height:80px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.skill{display:grid;grid-template-columns:1fr 170px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.skill select{font-weight:bold}.mastered{background:#e2f4e7;color:#137333;border:2px solid #32a852}.training{background:#e5f0ff;color:#1558a6;border:2px solid #4285d4}.not-mastered{background:#fde8e8;color:#b3261e;border:2px solid #d9534f}
+.status{display:inline-block;padding:5px 10px;border-radius:20px;font-weight:bold}.hidden{display:none!important}
+.saved-item{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid #eee}
+.muted{color:#777;font-size:13px}.report{background:#fff;padding:22px;border:1px solid #ddd;border-radius:10px}
+.report-head{border-bottom:3px solid var(--gold);padding-bottom:12px;margin-bottom:15px}.report table{width:100%;border-collapse:collapse;margin:12px 0}
+.report th,.report td{border:1px solid #888;padding:9px;text-align:right}.report th{background:#f1eadb}
+@media(max-width:600px){.skill{grid-template-columns:1fr}.skill select{width:100%}}
+@media print{body{background:#fff}header,.tabs,.no-print,.panel.form-panel{display:none!important}main{margin:0;padding:0;max-width:none}.report{border:0;padding:0}.report table{break-inside:avoid}@page{size:A4;margin:12mm}}
+
+/* Professional navigation, responsive layout and printing */
+:root{--gold:#d6a21a;--dark:#171318;--bg:#f3f5f8;--ink:#20242b;--line:#e2e6ed}
+body{background:var(--bg);line-height:1.65}
+header{position:relative;padding:24px 16px;background:linear-gradient(135deg,#171318,#302536)}
+header h1{letter-spacing:1px;font-size:clamp(22px,4vw,30px)}
+main{max-width:1180px}
+.tabs{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0}
+.tab{box-shadow:0 2px 8px #00000012}
+.panel,.card{box-shadow:0 6px 24px #20242b0b;border-color:#e6e9ef}
+button{transition:transform .15s,filter .15s;box-shadow:0 2px 5px #00000012}
+button:hover{filter:brightness(1.07);transform:translateY(-1px)}
+input:focus,select:focus,textarea:focus{outline:2px solid #d6a21a55;border-color:var(--gold)}
+.saved-item{border:1px solid #edf0f4;border-radius:12px;padding:14px;margin:10px 0;background:#fff}
+.page-tools{display:flex;justify-content:flex-end;gap:8px;margin:0 0 12px}
+.close-page{background:#606873!important;color:#fff!important}
+.print-btn{background:#315b83!important}
+#backToTop{position:fixed;left:16px;bottom:18px;z-index:99;border-radius:50%;width:48px;height:48px;padding:0;font-size:20px;box-shadow:0 5px 18px #0003;display:none}
+#backToTop.show{display:block}
+@media(max-width:600px){main{padding:0 9px}.panel{padding:13px}.tabs{position:static}.tabs button{flex:1 1 44%;padding:10px 7px}.saved-item{align-items:flex-start}}
+@media print{
+ body{background:#fff!important;color:#000!important}
+ header,.tabs,.no-print,#backToTop,.page-tools,.actions button,.saved-item button{display:none!important}
+ main{margin:0;padding:0;max-width:none}
+ .panel,.card,.report{box-shadow:none;border:0;padding:0}
+ .saved-item{border:0;padding:0}
+}
+
+</style>
+<style>
+.coach-command-grid{display:grid;grid-template-columns:repeat(2,minmax(118px,1fr));gap:7px;min-width:min(100%,270px)}
+.coach-command-grid button{white-space:normal;min-height:40px;padding:8px 10px;border-radius:9px;font-weight:700}
+.coach-command-grid .open-coach{background:#8b6717;color:#fff}
+.coach-command-grid .print-eval{background:#edf2f8;color:#203b5b;border:1px solid #b9c9dc}
+.coach-command-grid .print-violations{background:#fff1e8;color:#8a3f16;border:1px solid #e8c1a8}
+@media(max-width:600px){.coach-command-grid{grid-template-columns:1fr 1fr;min-width:100%;}.saved-item{flex-wrap:wrap}}
+</style>
+
+</head>
+<body>
+<header><h1>CROCODILE CLUB</h1><p>نظام تقييم السباحين وحفظ سجلات التقييم</p></header>
+<main>
+<div class="tabs no-print">
+<button class="tab active" data-tab="evaluate">تقييم جديد</button>
+<button class="tab" data-tab="levels">المستويات والمهارات</button>
+<button class="tab" data-tab="records">التقييمات المحفوظة</button>
+<button class="tab" data-tab="coaches">قائمة المدربين</button>
+<button class="tab" data-tab="violations">مخالفات المدربين</button>
+<button class="tab" data-tab="coachEvaluation">تقييم المدربين</button>
+</div>
+<div class="panel no-print" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+  <b>النسخ الاحتياطي للبيانات:</b>
+  <button class="gold" id="exportBackup">تصدير نسخة احتياطية</button>
+  <button class="light" id="importBackupBtn">استيراد نسخة احتياطية</button>
+  <input id="backupFile" type="file" accept=".json,application/json" style="display:none">
+  <span class="muted">احفظ ملف النسخة على جهازك، واستورده لاستعادة المستويات والتقييمات.</span>
+</div>
+<section id="evaluate">
+<div class="panel form-panel">
+<h2>بيانات السباح والتقييم</h2>
+<div class="grid">
+<div><label>اسم السباح</label><input id="swimmerName" placeholder="اسم السباح"></div>
+<div><label>كود السباح</label><input id="swimmerCode" placeholder="كود السباح"></div>
+<div><label>سنة الميلاد</label><input id="birthYear" type="number" min="1900" max="2100" placeholder="مثال: 2015"></div>
+<div><label>العمر</label><input id="age" readonly placeholder="يحسب تلقائياً"></div>
+<div><label>المستوى</label><select id="level"></select></div>
+<div><label>تاريخ التقييم</label><input id="date" type="date"></div>
+</div>
+<h3 style="margin-top:20px">تقييم المهارات</h3>
+<div id="skills"></div>
+<div class="grid" style="margin-top:15px">
+<div><label>اعتماد المستوى</label><select id="approval"><option value="pending">لم يتم الاعتماد</option><option value="approved">معتمد</option><option value="rejected">غير معتمد</option></select></div>
+<div><label>اسم المدرب</label><select id="coach"><option value="">اختر المدرب من القائمة</option></select></div>
+</div>
+<div style="margin-top:12px"><label>ملاحظات المدرب</label><textarea id="notes" placeholder="ملاحظات وتوصيات..."></textarea></div>
+<div class="actions no-print">
+<button class="gold" id="save">حفظ التقييم</button>
+<button class="light" id="new">تقييم جديد / تفريغ</button>
+<button id="print">طباعة / حفظ PDF</button>
+</div>
+<p class="muted">يتم حفظ التقييم على هذا الجهاز والمتصفح، ويمكن فتحه وتعديله أو طباعته لاحقاً من قائمة التقييمات المحفوظة.</p>
+</div>
+<div id="report" class="report hidden"></div>
+</section>
+<section id="levels" class="hidden">
+<div class="panel">
+<h2>إدارة المستويات والمهارات</h2>
+<div class="grid"><div><label>اسم المستوى</label><input id="newLevel" placeholder="مثال: Stage 1"></div><div><label>المهارة</label><input id="newSkill" placeholder="اكتب المهارة"></div></div>
+<div class="actions"><button class="gold" id="addLevel">إضافة مستوى</button><button class="light" id="addSkill">إضافة المهارة للمستوى المختار</button></div>
+<div id="levelList"></div>
+</div></section>
+<section id="records" class="hidden"><div class="panel"><h2>سجل التقييمات المحفوظة</h2><input id="search" placeholder="ابحث بالاسم أو الكود أو المستوى"><div id="recordList"></div></div></section>
+
+<section id="coaches" class="hidden">
+<div class="panel no-print">
+<h2 id="coachFormTitle">إضافة مدرب إلى القائمة</h2>
+<div class="grid">
+<div><label>اسم المدرب</label><input id="cName" placeholder="اسم المدرب"></div>
+<div><label>السن</label><input id="cAge" type="number" min="16"></div>
+<div><label>رقم الهاتف</label><input id="cPhone" inputmode="tel"></div>
+<div><label>المؤهل</label><input id="cQualification" placeholder="المؤهل الدراسي / التدريبي"></div>
+<div><label>سنوات الخبرة</label><input id="cExperience" type="number" min="0" step="1"></div>
+<div><label>التخصص / المستويات</label><input id="cSpec" placeholder="مثال: مبتدئين، فريق"></div>
+<div><label>نظام الراتب</label><select id="cPayType"><option value="hourly">بالساعة</option><option value="monthly">شهري</option></select></div>
+<div><label>سعر الساعة (جنيه)</label><input id="cHourRate" type="number" min="0" step="0.01"></div>
+<div><label>الراتب الشهري (جنيه)</label><input id="cMonthlySalary" type="number" min="0" step="0.01"></div>
+<div><label>الخصومات (جنيه)</label><input id="cDeductions" type="number" min="0" step="0.01" value="0"></div>
+</div>
+<div class="actions"><button class="gold" id="saveCoach">حفظ المدرب</button><button class="light" id="resetCoach">جديد / إلغاء التعديل</button></div>
+<p class="muted">القائمة ديناميكية؛ أضف المدربين أو عدّل بياناتهم أو احذفهم. اسم المدرب يظهر تلقائياً في نموذج تقييم السباح.</p>
+</div>
+<div class="panel"><h2>قائمة المدربين</h2><input id="coachSearch" placeholder="بحث باسم المدرب أو الهاتف"><div id="coachList"></div></div>
+</section>
+
+<section id="violations" class="hidden">
+ <div class="panel form-panel">
+  <h2>تسجيل مخالفة مدرب</h2>
+  <div class="grid">
+   <div><label>المدرب</label><select id="vCoach"><option value="">اختر المدرب</option></select></div>
+   <div><label>تاريخ المخالفة</label><input id="vDate" type="date"></div>
+   <div><label>موضوع المخالفة وفق اللائحة</label><select id="vSubject"><option value="">اختر المخالفة</option></select></div>
+   <div><label>إضافة مخالفة يدوياً</label><input id="vCustomSubject" placeholder="اكتب موضوع المخالفة اليدوي"></div>
+   <div><label>الإجراء المتخذ وفق اللائحة</label><select id="vAction"><option value="">اختر الإجراء</option></select></div>
+   <div><label>إجراء يدوي / توضيح الإجراء</label><input id="vCustomAction" placeholder="يمكن كتابة الإجراء إذا لم يكن بالقائمة"></div>
+  </div>
+  <div style="margin-top:12px"><label>ملاحظات المخالفة</label><textarea id="vNotes" placeholder="تفاصيل الواقعة، الشهود، أو أي ملاحظات..."></textarea></div>
+  <div class="actions"><button class="gold" id="saveViolation">حفظ المخالفة</button><button class="light" id="resetViolation">مخالفة جديدة</button></div>
+  <p class="muted">القوائم الأولية قابلة للتعديل من إدارة بنود اللائحة أدناه. لم تُدرج عقوبات قانونية محددة لعدم إرفاق لائحة النادي المعتمدة.</p>
+ </div>
+ <div class="panel">
+  <h2>إدارة بنود المخالفات والإجراءات</h2>
+  <div class="grid">
+   <div><label>إضافة موضوع مخالفة</label><input id="newViolationSubject" placeholder="موضوع المخالفة حسب لائحة النادي"></div>
+   <div><label>الإجراء المقابل</label><input id="newViolationAction" placeholder="الإجراء المعتمد حسب اللائحة"></div>
+  </div>
+  <div class="actions"><button class="gold" id="addViolationRule">إضافة بند للائحة</button></div>
+  <div id="violationRulesList"></div>
+ </div>
+ <div class="panel"><h2>سجل مخالفات المدربين</h2><input id="violationSearch" placeholder="بحث باسم المدرب أو موضوع المخالفة"><div id="violationList"></div></div>
+</section>
+
+<section id="coachEvaluation" class="hidden">
+ <div class="panel form-panel">
+  <h2>تقييم أداء المدربين</h2>
+  <div class="grid">
+   <div><label>المدرب</label><select id="eCoach"><option value="">اختر المدرب</option></select></div>
+   <div><label>الشهر</label><input id="eMonth" type="month"></div>
+   <div><label>تاريخ التقييم</label><input id="eDate" type="date"></div>
+   <div><label>اسم المشرف</label><input id="eEvaluator" placeholder="اسم المشرف"></div>
+  </div>
+  <h3 style="margin-top:20px">بنود التقييم الشهري (100 درجة)</h3>
+  <p class="muted">أدخل الدرجة المستحقة لكل بند بما لا يتجاوز الدرجة الكلية، ويمكن إضافة ملاحظة للمشرف أمام كل بند.</p>
+  <div id="coachRatingFields"></div>
+  <div class="grid" style="margin-top:14px">
+   <div class="card"><b>إجمالي الدرجات</b><div id="coachScoreTotal" style="font-size:26px;color:#9a6b08;font-weight:bold">0 / 100</div></div>
+   <div><label>التقدير النهائي</label><select id="eGrade"><option value="">اختر التقدير</option><option>ممتاز</option><option>جيد جداً</option><option>جيد</option><option>مقبول</option><option>يحتاج إلى تحسين</option></select></div>
+  </div>
+  <div style="margin-top:12px"><label>ملاحظات عامة للمشرف</label><textarea id="eNotes"></textarea></div>
+  <div class="actions"><button class="gold" id="saveCoachEvaluation">حفظ التقييم</button><button class="light" id="resetCoachEvaluation">تقييم جديد</button></div>
+ </div>
+ <div class="panel"><h2>سجل تقييمات المدربين</h2><input id="evaluationSearch" placeholder="بحث باسم المدرب أو فترة التقييم"><div id="coachEvaluationList"></div></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const defaults=[
+{name:'Stage 1',skills:['5 relaxed bobbles','Open eyes underwater','Bobbing with bubbles and air exchange','Back float and recover 10 sec (star fish)','Front float and recover 10 sec (star fish)']},
+{name:'Stage 2',skills:['Front glide and recover','Head lead back glide and recover','Arms lead back glide and recover','Roll over (back to front, front to back)','Water safety (tread water for 10 sec)']},
+{name:'Stage 3',skills:['Torpedo kicking with breathing for 10 m','Arms lead backstroke kick for 10 m','Backstroke kicking with rotation for 10 m','Freestyle kicking roll over for 10 m','Water safety (tread water for 20 sec)']},
+{name:'Stage 4',skills:['Kick roll over (front to back, back to front)','Front kick with rotation 3 positions','Freestyle pull without breathing','Catch up freestyle without breathing','Backstroke kick with rotation','Single arm backstroke with rotation','Static Olympic backstroke with rotation']},
+{name:'Stage 5',skills:['Side breathing skills','Catch up freestyle with breathing every 6 kicks','Freestyle every 3 strokes breathing','Olympic backstroke with rotation','Streamline front dolphin kick','Streamline back dolphin kick']},
+{name:'Stage 6',skills:['Streamline front dolphin kick','25 m freestyle (start, finish)','Freestyle flip turn','Streamline back dolphin kick','25 m backstroke (start, finish)','Backstroke flip turn']}
+];
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let levels=load('cc_eval_levels',defaults),records=load('cc_eval_records',[]),
+    coaches=load('cc_eval_coaches',null),editingId=null,reportRecord=null,editingCoachId=null;
+let violations=load('cc_coach_violations',[]),
+    coachEvaluations=load('cc_coach_evaluations',[]),
+    violationRules=load('cc_violation_rules',[]),
+    editingViolationId=null;
+if(!Array.isArray(coaches)){
+  // Import coach names/details from the companion swimming-school system if it exists in this browser.
+  try{const old=JSON.parse(localStorage.getItem('swimSchoolFullV4')||'null');coaches=Array.isArray(old?.coaches)?old.coaches.map(c=>({...c})):[];}catch{coaches=[];}
+}
+const saveCoaches=()=>localStorage.setItem('cc_eval_coaches',JSON.stringify(coaches));
+const saveData=()=>{localStorage.setItem('cc_eval_levels',JSON.stringify(levels));localStorage.setItem('cc_eval_records',JSON.stringify(records));saveCoaches();saveExtraData()};
+const saveExtraData=()=>{localStorage.setItem('cc_coach_violations',JSON.stringify(violations));localStorage.setItem('cc_coach_evaluations',JSON.stringify(coachEvaluations));localStorage.setItem('cc_violation_rules',JSON.stringify(violationRules))};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fillLevels(){ $('level').innerHTML=levels.map((l,i)=>`<option value="${i}">${esc(l.name)}</option>`).join('');$('levelList').innerHTML=levels.map((l,i)=>`<div class="card"><b>${esc(l.name)}</b><button class="light" onclick="renameLevel(${i})">تعديل الاسم</button><button class="red" onclick="removeLevel(${i})">حذف المستوى</button><ol>${l.skills.map((x,j)=>`<li style="margin:9px 0">${esc(x)} <button class="light" onclick="editSkill(${i},${j})">تعديل</button> <button class="red" onclick="deleteSkill(${i},${j})">حذف</button></li>`).join('')}</ol></div>`).join('');renderSkills()}
+function renderSkills(){const l=levels[+$('level').value]||levels[0];$('skills').innerHTML=l?l.skills.map((s,i)=>`<div class="skill"><div>${i+1}. ${esc(s)}</div><select id="status${i}" class="training" onchange="this.className=this.value"><option value="training">محتاج تدريب</option><option value="mastered">متقن</option><option value="not-mastered">لا يتقن</option></select></div>`).join(''):'لا توجد مستويات؛ أضف مستوى من تبويب المستويات.'}
+function updateAge(){const y=+$('birthYear').value;$('age').value=y>1900&&y<=new Date().getFullYear()?new Date().getFullYear()-y:''}
+$('birthYear').addEventListener('input',updateAge);$('level').addEventListener('change',renderSkills);
+$('date').value=new Date().toISOString().slice(0,10);
+function collect(){const li=+$('level').value,l=levels[li];if(!$('swimmerName').value.trim()||!$('swimmerCode').value.trim()||!l){alert('أدخل اسم السباح والكود واختر المستوى.');return null}
+return {id:editingId||('r'+Date.now()),name:$('swimmerName').value.trim(),code:$('swimmerCode').value.trim(),birthYear:$('birthYear').value,age:$('age').value,levelIndex:li,levelName:l.name,date:$('date').value,statuses:l.skills.map((skill,i)=>({skill,status:$('status'+i)?.value||'training'})),approval:$('approval').value,coach:$('coach').value,notes:$('notes').value,savedAt:new Date().toISOString()}}
+function persist(){const r=collect();if(!r)return;const i=records.findIndex(x=>x.id===r.id);if(i>=0)records[i]=r;else records.unshift(r);editingId=r.id;saveData();renderRecords();makeReport(r);alert('تم حفظ التقييم بنجاح. ستجده في قائمة التقييمات المحفوظة.')}
+$('save').onclick=persist;
+function clearForm(){editingId=null;$('swimmerName').value='';$('swimmerCode').value='';$('birthYear').value='';$('age').value='';$('approval').value='pending';$('coach').value='';$('notes').value='';$('date').value=new Date().toISOString().slice(0,10);renderSkills();$('report').classList.add('hidden')}
+$('new').onclick=clearForm;
+function makeReport(r){const names={mastered:'متقن',training:'محتاج تدريب','not-mastered':'لا يتقن'},classes={mastered:'mastered',training:'training','not-mastered':'not-mastered'};$('report').innerHTML=`<div class="report-head"><h2 style="color:#9a6b08">CROCODILE CLUB</h2><h3>استمارة تقييم السباح</h3></div><div class="grid"><div><b>اسم السباح:</b> ${esc(r.name)}</div><div><b>الكود:</b> ${esc(r.code)}</div><div><b>سنة الميلاد:</b> ${esc(r.birthYear)}</div><div><b>العمر:</b> ${esc(r.age)}</div><div><b>المستوى:</b> ${esc(r.levelName)}</div><div><b>التاريخ:</b> ${esc(r.date)}</div></div><table><thead><tr><th>م</th><th>المهارة</th><th>التقييم</th></tr></thead><tbody>${r.statuses.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.skill)}</td><td><span class="status ${classes[x.status]}">${names[x.status]}</span></td></tr>`).join('')}</tbody></table><p><b>اعتماد المستوى:</b> ${r.approval==='approved'?'معتمد':r.approval==='rejected'?'غير معتمد':'لم يتم الاعتماد'}</p><p><b>المدرب:</b> ${esc(r.coach)}</p><p><b>ملاحظات:</b> ${esc(r.notes)}</p><p style="margin-top:40px">توقيع المدرب: ............................</p>`;$('report').classList.remove('hidden');reportRecord=r}
+$('print').onclick=()=>{if(!reportRecord){const r=collect();if(!r)return;makeReport(r)}window.print()};
+function renderRecords(){const q=($('search').value||'').toLowerCase();$('recordList').innerHTML=records.filter(r=>(r.name+' '+r.code+' '+r.levelName).toLowerCase().includes(q)).map(r=>`<div class="saved-item"><div><b>${esc(r.name)}</b> — ${esc(r.code)}<div class="muted">${esc(r.levelName)} | ${esc(r.date)}</div></div><div><button class="gold" onclick="openRecord('${r.id}')">فتح / تعديل</button> <button class="red" onclick="deleteRecord('${r.id}')">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد تقييمات محفوظة.</p>'}
+$('search').addEventListener('input',renderRecords);
+window.openRecord=id=>{const r=records.find(x=>x.id===id);if(!r)return;editingId=r.id;$('swimmerName').value=r.name;$('swimmerCode').value=r.code;$('birthYear').value=r.birthYear;$('age').value=r.age;$('level').value=r.levelIndex;$('date').value=r.date;$('approval').value=r.approval;renderCoachOptions(r.coach);$('coach').value=r.coach||'';$('notes').value=r.notes;renderSkills();r.statuses.forEach((x,i)=>{const e=$('status'+i);if(e){e.value=x.status;e.className=x.status}});makeReport(r);showTab('evaluate')};
+window.deleteRecord=id=>{if(confirm('هل تريد حذف التقييم نهائياً؟')){records=records.filter(x=>x.id!==id);saveData();renderRecords()}};
+window.renameLevel=i=>{const n=prompt('اسم المستوى الجديد',levels[i].name);if(n?.trim()){levels[i].name=n.trim();saveData();fillLevels()}};
+window.removeLevel=i=>{if(confirm('حذف المستوى وكل مهاراته؟')){levels.splice(i,1);saveData();fillLevels()}};
+window.editSkill=(i,j)=>{const n=prompt('تعديل المهارة',levels[i].skills[j]);if(n?.trim()){levels[i].skills[j]=n.trim();saveData();fillLevels()}};
+window.deleteSkill=(i,j)=>{if(confirm('حذف المهارة؟')){levels[i].skills.splice(j,1);saveData();fillLevels()}};
+$('addLevel').onclick=()=>{const n=$('newLevel').value.trim();if(!n)return;levels.push({name:n,skills:[]});$('newLevel').value='';saveData();fillLevels()};
+$('addSkill').onclick=()=>{const l=levels[+$('level').value],v=$('newSkill').value.trim();if(!l||!v)return alert('اختر مستوى واكتب المهارة.');l.skills.push(v);$('newSkill').value='';saveData();fillLevels()};
+// Backup / restore: exports both the levels and all saved evaluations.
+$('exportBackup').onclick=()=>{
+  const payload={app:'Crocodile Club Swimmer Evaluation',version:3,exportedAt:new Date().toISOString(),levels,records,coaches,violations,coachEvaluations,violationRules};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='Crocodile_Club_Backup_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+};
+$('importBackupBtn').onclick=()=>$('backupFile').click();
+$('backupFile').onchange=async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data||!Array.isArray(data.levels)||!Array.isArray(data.records))throw new Error('invalid');
+    if(!confirm('سيتم استبدال المستويات والتقييمات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟'))return;
+    levels=data.levels;records=data.records;coaches=Array.isArray(data.coaches)?data.coaches:coaches;
+     violations=Array.isArray(data.violations)?data.violations:violations;
+     coachEvaluations=Array.isArray(data.coachEvaluations)?data.coachEvaluations:coachEvaluations;
+     violationRules=Array.isArray(data.violationRules)?data.violationRules:violationRules;
+     editingId=null;reportRecord=null;
+    saveData();
+// Coach violations and coach performance evaluations
+const todayISO=()=>new Date().toISOString().slice(0,10);
+$('vDate').value=todayISO();$('eDate').value=todayISO();$('eMonth').value=todayISO().slice(0,7);
+const ratingCriteria=[
+ ['attendance','الالتزام بالحضور والمواعيد'],
+ ['technical','الكفاءة الفنية وجودة تعليم المهارات'],
+ ['safety','تطبيق قواعد الأمن والسلامة'],
+ ['discipline','الانضباط والالتزام بتعليمات الإدارة'],
+ ['communication','التعامل والتواصل مع السباحين وأولياء الأمور'],
+ ['organization','تنظيم المجموعة وإدارة وقت التدريب'],
+ ['development','متابعة تطور السباحين وتسجيل الملاحظات']
+];
+function fillCoachSelects(){
+ const opts='<option value="">اختر المدرب</option>'+coaches.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar')).map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+ $('vCoach').innerHTML=opts;$('eCoach').innerHTML=opts;
+}
+function renderViolationRules(){
+ $('vSubject').innerHTML='<option value="">اختر المخالفة</option>'+violationRules.map((r,i)=>`<option value="${i}">${esc(r.subject)}</option>`).join('');
+ $('violationRulesList').innerHTML=violationRules.map((r,i)=>`<div class="saved-item"><div><b>${esc(r.subject)}</b><div class="muted">${esc(r.action)}</div></div><button class="red" onclick="removeViolationRule(${i})">حذف البند</button></div>`).join('')||'<p class="muted">لا توجد بنود مضافة.</p>';
+}
+$('vSubject').onchange=()=>{const r=violationRules[+$('vSubject').value];$('vAction').innerHTML='<option value="">اختر الإجراء</option>';if(r)$('vAction').innerHTML+=`<option value="${esc(r.action)}">${esc(r.action)}</option>`};
+$('addViolationRule').onclick=()=>{
+ const subject=$('newViolationSubject').value.trim(),action=$('newViolationAction').value.trim();
+ if(!subject||!action)return alert('اكتب موضوع المخالفة والإجراء المعتمد.');
+ if(violationRules.some(r=>r.subject===subject))return alert('هذا البند موجود بالفعل.');
+ violationRules.push({subject,action});saveExtraData();$('newViolationSubject').value='';$('newViolationAction').value='';renderViolationRules();
+};
+window.removeViolationRule=i=>{if(confirm('حذف بند اللائحة من القوائم؟ السجلات السابقة لن تتأثر.')){violationRules.splice(i,1);saveExtraData();renderViolationRules()}};
+function resetViolation(){
+ editingViolationId=null;$('vCoach').value='';$('vDate').value=todayISO();$('vSubject').value='';
+ $('vCustomSubject').value='';$('vAction').innerHTML='<option value="">اختر الإجراء</option>';
+ $('vCustomAction').value='';$('vNotes').value='';
+}
+$('resetViolation').onclick=resetViolation;
+$('saveViolation').onclick=()=>{
+ const c=coaches.find(x=>String(x.id)===String($('vCoach').value));
+ const subject=$('vCustomSubject').value.trim()||violationRules[+$('vSubject').value]?.subject||'';
+ const action=$('vCustomAction').value.trim()||$('vAction').value;
+ if(!c||!subject||!action)return alert('اختر المدرب وحدد موضوع المخالفة والإجراء المتخذ.');
+ const item={id:editingViolationId||'v'+Date.now(),coachId:c.id,coachName:c.name,date:$('vDate').value,subject,action,notes:$('vNotes').value.trim(),createdAt:new Date().toISOString()};
+ const i=violations.findIndex(x=>x.id===item.id);if(i>=0)violations[i]=item;else violations.unshift(item);
+ saveExtraData();renderViolations();resetViolation();alert('تم حفظ المخالفة.');
+};
+function renderViolations(){
+ const q=($('violationSearch').value||'').toLowerCase();
+ $('violationList').innerHTML=violations.filter(v=>(v.coachName+' '+v.subject+' '+v.action).toLowerCase().includes(q)).map(v=>`<div class="saved-item"><div><b>${esc(v.coachName)}</b> — ${esc(v.date)}<div><b>المخالفة:</b> ${esc(v.subject)}</div><div><b>الإجراء:</b> ${esc(v.action)}</div><div class="muted">${esc(v.notes||'لا توجد ملاحظات')}</div></div><div class="actions"><button class="light" onclick="editViolation('${v.id}')">تعديل</button><button class="red" onclick="deleteViolation('${v.id}')">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد مخالفات مسجلة.</p>';
+}
+$('violationSearch').oninput=renderViolations;
+window.editViolation=id=>{
+ const v=violations.find(x=>x.id===id);if(!v)return;editingViolationId=id;
+ $('vCoach').value=v.coachId;$('vDate').value=v.date;$('vCustomSubject').value=v.subject;
+ $('vCustomAction').value=v.action;$('vNotes').value=v.notes||'';showTab('violations');window.scrollTo(0,0);
+};
+window.deleteViolation=id=>{if(confirm('حذف سجل المخالفة؟')){violations=violations.filter(v=>v.id!==id);saveExtraData();renderViolations()}};
+function renderRatingFields(){
+ $('coachRatingFields').innerHTML=ratingCriteria.map(([key,label])=>`<div class="skill"><label>${label}</label><select id="rating_${key}"><option value="5">5 - ممتاز</option><option value="4">4 - جيد جداً</option><option value="3" selected>3 - جيد</option><option value="2">2 - يحتاج تحسين</option><option value="1">1 - ضعيف</option></select></div>`).join('');
+}
+function resetCoachEvaluation(){
+ $('eCoach').value='';$('eDate').value=todayISO();$('ePeriod').value='أسبوعي';$('eEvaluator').value='';
+ ratingCriteria.forEach(([k])=>$('rating_'+k).value='3');$('eStrengths').value='';$('eImprove').value='';$('eNotes').value='';
+}
+$('resetCoachEvaluation').onclick=resetCoachEvaluation;
+$('saveCoachEvaluation').onclick=()=>{
+ const c=coaches.find(x=>String(x.id)===String($('eCoach').value));if(!c)return alert('اختر المدرب أولاً.');
+ const ratings=Object.fromEntries(ratingCriteria.map(([k])=>[k,Number($('rating_'+k).value)]));
+ const total=Object.values(ratings).reduce((a,b)=>a+b,0),average=total/ratingCriteria.length;
+ coachEvaluations.unshift({id:'e'+Date.now(),coachId:c.id,coachName:c.name,date:$('eDate').value,period:$('ePeriod').value,evaluator:$('eEvaluator').value.trim(),ratings,average,strengths:$('eStrengths').value.trim(),improve:$('eImprove').value.trim(),notes:$('eNotes').value.trim()});
+ saveExtraData();renderCoachEvaluations();alert('تم حفظ تقييم المدرب. متوسط التقييم: '+average.toFixed(2)+' من 5.');resetCoachEvaluation();
+};
+function renderCoachEvaluations(){
+ const q=($('evaluationSearch').value||'').toLowerCase();
+ $('coachEvaluationList').innerHTML=coachEvaluations.filter(e=>(e.coachName+' '+e.period+' '+e.evaluator).toLowerCase().includes(q)).map(e=>`<div class="saved-item"><div><b>${esc(e.coachName)}</b> — ${esc(e.date)} <span class="status training">${esc(e.period)}</span><div><b>المتوسط: ${Number(e.average).toFixed(2)} / 5</b></div><div class="muted">المقيّم: ${esc(e.evaluator||'—')} | نقاط القوة: ${esc(e.strengths||'—')} | التطوير: ${esc(e.improve||'—')}</div><details><summary>تفاصيل الدرجات والملاحظات</summary>${ratingCriteria.map(([k,l])=>`<div>${l}: ${e.ratings?.[k]??'—'} / 5</div>`).join('')}<p>${esc(e.notes||'')}</p></details></div><button class="red" onclick="deleteCoachEvaluation('${e.id}')">حذف</button></div>`).join('')||'<p class="muted">لا توجد تقييمات للمدربين.</p>';
+}
+$('evaluationSearch').oninput=renderCoachEvaluations;
+window.deleteCoachEvaluation=id=>{if(confirm('حذف تقييم المدرب؟')){coachEvaluations=coachEvaluations.filter(e=>e.id!==id);saveExtraData();renderCoachEvaluations()}};
+
+fillLevels();renderRecords();renderCoachList();renderCoachOptions();
+fillCoachSelects();renderViolationRules();renderViolations();renderRatingFields();resetCoachEvaluation();renderCoachEvaluations();renderCoachList();clearForm();
+    alert('تم استيراد النسخة الاحتياطية واستعادة البيانات بنجاح.');
+  }catch(err){alert('تعذر استيراد الملف. تأكد أنه ملف نسخة احتياطية صحيح صادر من البرنامج.');}
+  finally{e.target.value='';}
+};
+
+function renderCoachOptions(selected=''){
+  const el=$('coach');if(!el)return;
+  el.innerHTML='<option value="">اختر المدرب من القائمة</option>'+coaches.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar')).map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  if(selected && coaches.some(c=>c.name===selected))el.value=selected;
+}
+function renderCoachList(){
+  const q=($('coachSearch')?.value||'').trim().toLowerCase();
+  const rows=coaches.filter(c=>([c.name,c.phone,c.qualification,c.spec].join(' ').toLowerCase()).includes(q));
+  $('coachList').innerHTML=rows.map(c=>`<div class="saved-item"><div><b>${esc(c.name)}</b><div class="muted">${esc(c.phone||'بدون هاتف')} · ${esc(c.qualification||c.spec||'')}</div><div class="muted">${c.payType==='monthly'?'راتب شهري: '+(Number(c.monthlySalary)||0)+' جنيه':'بالساعة: '+(Number(c.hourRate)||0)+' جنيه'} · الخبرة: ${esc(c.experience||0)} سنة</div></div><div class="actions"><button class="light" onclick="editCoachEntry('${String(c.id)}')">تعديل</button><button class="red" onclick="deleteCoachEntry('${String(c.id)}')">حذف</button></div></div>`).join('')||'<p class="muted">لا يوجد مدربون في القائمة. أضف أول مدرب من النموذج.</p>';
+  renderCoachOptions($('coach').value);
+}
+function resetCoachEntry(){
+  editingCoachId=null;
+  ['cName','cAge','cPhone','cQualification','cExperience','cSpec','cHourRate','cMonthlySalary'].forEach(id=>$(id).value='');
+  $('cPayType').value='hourly';$('cDeductions').value='0';$('coachFormTitle').textContent='إضافة مدرب إلى القائمة';
+}
+function saveCoachEntry(){
+  const name=$('cName').value.trim();if(!name)return alert('أدخل اسم المدرب.');
+  if(coaches.some(c=>c.name.trim().toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingCoachId)))return alert('اسم المدرب موجود بالفعل في القائمة.');
+  const old=coaches.find(c=>String(c.id)===String(editingCoachId))||{};
+  const entry={...old,id:editingCoachId||('coach_'+Date.now()),name,age:$('cAge').value,phone:$('cPhone').value.trim(),qualification:$('cQualification').value.trim(),experience:$('cExperience').value,spec:$('cSpec').value.trim(),payType:$('cPayType').value,hourRate:Number($('cHourRate').value)||0,monthlySalary:Number($('cMonthlySalary').value)||0,deductions:Number($('cDeductions').value)||0};
+  if(editingCoachId)coaches=coaches.map(c=>String(c.id)===String(editingCoachId)?entry:c);else coaches.push(entry);
+  saveCoaches();resetCoachEntry();renderCoachList();alert('تم حفظ بيانات المدرب.');
+}
+window.editCoachEntry=id=>{
+  const c=coaches.find(x=>String(x.id)===String(id));if(!c)return;editingCoachId=c.id;
+  $('cName').value=c.name||'';$('cAge').value=c.age||'';$('cPhone').value=c.phone||'';
+  $('cQualification').value=c.qualification||'';$('cExperience').value=c.experience||'';
+  $('cSpec').value=c.spec||'';$('cPayType').value=c.payType||'hourly';
+  $('cHourRate').value=c.hourRate||'';$('cMonthlySalary').value=c.monthlySalary||'';
+  $('cDeductions').value=c.deductions||0;$('coachFormTitle').textContent='تعديل بيانات المدرب';
+  showTab('coaches');window.scrollTo(0,0);
+};
+window.deleteCoachEntry=id=>{
+  const c=coaches.find(x=>String(x.id)===String(id));if(!c)return;
+  if(!confirm('حذف المدرب من القائمة؟ التقييمات السابقة ستظل محفوظة باسمه.'))return;
+  coaches=coaches.filter(x=>String(x.id)!==String(id));saveCoaches();renderCoachList();
+};
+$('saveCoach').onclick=saveCoachEntry;$('resetCoach').onclick=resetCoachEntry;
+$('coachSearch').addEventListener('input',renderCoachList);
+
+function showTab(id){document.querySelectorAll('main>section').forEach(x=>x.classList.toggle('hidden',x.id!==id));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id))}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+// Coach violations and coach performance evaluations
+const todayISO=()=>new Date().toISOString().slice(0,10);
+$('vDate').value=todayISO();$('eDate').value=todayISO();$('eMonth').value=todayISO().slice(0,7);
+const ratingCriteria=[
+ ['attendance','الالتزام بمواعيد العمل والحضور والانصراف',10],
+ ['admin','الالتزام بالتعليمات الإدارية والتنظيمية',10],
+ ['preparation','التحضير الجيد للحصة التدريبية وتحديد أهدافها',15],
+ ['review','مراجعة مهارات المستوى السابق قبل تعليم المهارات الجديدة',10],
+ ['teaching','تعليم المهارات والتدرج في الشرح والتطبيق',15],
+ ['correction','تصحيح أخطاء السباحين ومتابعة التطور الفردي',10],
+ ['organization','تنظيم المجموعة واستغلال زمن الحصة بكفاءة',10],
+ ['safety','الاهتمام بسلامة السباحين والانضباط داخل الحمام',10],
+ ['communication','حسن التعامل مع السباحين وأولياء الأمور والزملاء',5],
+ ['cooperation','التعاون مع المشرف وتنفيذ التكليفات',5]
+];
+function fillCoachSelects(){
+ const opts='<option value="">اختر المدرب</option>'+coaches.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar')).map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+ $('vCoach').innerHTML=opts;$('eCoach').innerHTML=opts;
+}
+function renderViolationRules(){
+ $('vSubject').innerHTML='<option value="">اختر المخالفة</option>'+violationRules.map((r,i)=>`<option value="${i}">${esc(r.subject)}</option>`).join('');
+ $('violationRulesList').innerHTML=violationRules.map((r,i)=>`<div class="saved-item"><div><b>${esc(r.subject)}</b><div class="muted">${esc(r.action)}</div></div><button class="red" onclick="removeViolationRule(${i})">حذف البند</button></div>`).join('')||'<p class="muted">لا توجد بنود مضافة.</p>';
+}
+$('vSubject').onchange=()=>{const r=violationRules[+$('vSubject').value];$('vAction').innerHTML='<option value="">اختر الإجراء</option>';if(r)$('vAction').innerHTML+=`<option value="${esc(r.action)}">${esc(r.action)}</option>`};
+$('addViolationRule').onclick=()=>{
+ const subject=$('newViolationSubject').value.trim(),action=$('newViolationAction').value.trim();
+ if(!subject||!action)return alert('اكتب موضوع المخالفة والإجراء المعتمد.');
+ if(violationRules.some(r=>r.subject===subject))return alert('هذا البند موجود بالفعل.');
+ violationRules.push({subject,action});saveExtraData();$('newViolationSubject').value='';$('newViolationAction').value='';renderViolationRules();
+};
+window.removeViolationRule=i=>{if(confirm('حذف بند اللائحة من القوائم؟ السجلات السابقة لن تتأثر.')){violationRules.splice(i,1);saveExtraData();renderViolationRules()}};
+function resetViolation(){
+ editingViolationId=null;$('vCoach').value='';$('vDate').value=todayISO();$('vSubject').value='';
+ $('vCustomSubject').value='';$('vAction').innerHTML='<option value="">اختر الإجراء</option>';
+ $('vCustomAction').value='';$('vNotes').value='';
+}
+$('resetViolation').onclick=resetViolation;
+$('saveViolation').onclick=()=>{
+ const c=coaches.find(x=>String(x.id)===String($('vCoach').value));
+ const subject=$('vCustomSubject').value.trim()||violationRules[+$('vSubject').value]?.subject||'';
+ const action=$('vCustomAction').value.trim()||$('vAction').value;
+ if(!c||!subject||!action)return alert('اختر المدرب وحدد موضوع المخالفة والإجراء المتخذ.');
+ const item={id:editingViolationId||'v'+Date.now(),coachId:c.id,coachName:c.name,date:$('vDate').value,subject,action,notes:$('vNotes').value.trim(),createdAt:new Date().toISOString()};
+ const i=violations.findIndex(x=>x.id===item.id);if(i>=0)violations[i]=item;else violations.unshift(item);
+ saveExtraData();renderViolations();resetViolation();alert('تم حفظ المخالفة.');
+};
+function renderViolations(){
+ const q=($('violationSearch').value||'').toLowerCase();
+ $('violationList').innerHTML=violations.filter(v=>(v.coachName+' '+v.subject+' '+v.action).toLowerCase().includes(q)).map(v=>`<div class="saved-item"><div><b>${esc(v.coachName)}</b> — ${esc(v.date)}<div><b>المخالفة:</b> ${esc(v.subject)}</div><div><b>الإجراء:</b> ${esc(v.action)}</div><div class="muted">${esc(v.notes||'لا توجد ملاحظات')}</div></div><div class="actions"><button class="light" onclick="editViolation('${v.id}')">تعديل</button><button class="red" onclick="deleteViolation('${v.id}')">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد مخالفات مسجلة.</p>';
+}
+$('violationSearch').oninput=renderViolations;
+window.editViolation=id=>{
+ const v=violations.find(x=>x.id===id);if(!v)return;editingViolationId=id;
+ $('vCoach').value=v.coachId;$('vDate').value=v.date;$('vCustomSubject').value=v.subject;
+ $('vCustomAction').value=v.action;$('vNotes').value=v.notes||'';showTab('violations');window.scrollTo(0,0);
+};
+window.deleteViolation=id=>{if(confirm('حذف سجل المخالفة؟')){violations=violations.filter(v=>v.id!==id);saveExtraData();renderViolations()}};
+
+function renderRatingFields(savedScores={},savedNotes={}){
+ $('coachRatingFields').innerHTML=ratingCriteria.map(([key,label,max],i)=>`<div class="card" style="margin:8px 0;padding:12px">
+  <div class="skill" style="grid-template-columns:1fr 130px;border:0">
+   <div><b>${i+1}. ${label}</b><div class="muted">الدرجة الكلية: ${max}</div></div>
+   <div><label>الدرجة المستحقة</label><input type="number" id="score_${key}" min="0" max="${max}" step="0.5" value="${savedScores[key]??0}" oninput="updateCoachTotal()"></div>
+  </div>
+  <label>ملاحظات المشرف</label><textarea id="note_${key}" rows="2" style="min-height:52px">${esc(savedNotes[key]||'')}</textarea>
+ </div>`).join('');
+ updateCoachTotal();
+}
+function updateCoachTotal(){
+ const total=ratingCriteria.reduce((sum,[key,,max])=>{const el=$('score_'+key);let n=Number(el?.value)||0;if(n>max){n=max;if(el)el.value=max}if(n<0){n=0;if(el)el.value=0}return sum+n},0);
+ $('coachScoreTotal').textContent=total.toFixed(1).replace(/\.0$/,'')+' / 100';
+ return total;
+}
+function resetCoachEvaluation(){
+ $('eCoach').value='';$('eDate').value=todayISO();$('eMonth').value=todayISO().slice(0,7);$('eEvaluator').value='';
+ $('eGrade').value='';$('eNotes').value='';renderRatingFields();
+}
+$('resetCoachEvaluation').onclick=resetCoachEvaluation;
+$('saveCoachEvaluation').onclick=()=>{
+ const c=coaches.find(x=>String(x.id)===String($('eCoach').value));if(!c)return alert('اختر المدرب أولاً.');
+ const scores=Object.fromEntries(ratingCriteria.map(([k])=>[k,Math.min(Number(ratingCriteria.find(x=>x[0]===k)[2]),Math.max(0,Number($('score_'+k).value)||0))]));
+ const itemNotes=Object.fromEntries(ratingCriteria.map(([k])=>[k,$('note_'+k).value.trim()]));
+ const total=updateCoachTotal();
+ const item={id:'e'+Date.now(),coachId:c.id,coachName:c.name,date:$('eDate').value,month:$('eMonth').value,evaluator:$('eEvaluator').value.trim(),scores,itemNotes,total,grade:$('eGrade').value,notes:$('eNotes').value.trim()};
+ coachEvaluations.unshift(item);saveExtraData();renderCoachEvaluations();alert('تم حفظ التقييم الشهري. الإجمالي: '+total.toFixed(1)+' من 100.');resetCoachEvaluation();
+};
+function renderCoachEvaluations(){
+ const q=($('evaluationSearch').value||'').toLowerCase();
+ $('coachEvaluationList').innerHTML=coachEvaluations.filter(e=>(e.coachName+' '+(e.month||'')+' '+e.evaluator).toLowerCase().includes(q)).map(e=>`<div class="saved-item"><div style="flex:1"><b>${esc(e.coachName)}</b> — ${esc(e.month||e.date||'')}<div><b>الإجمالي: ${Number(e.total??e.average??0).toFixed(1)} / 100</b> ${e.grade?'<span class="status training">'+esc(e.grade)+'</span>':''}</div><div class="muted">المشرف: ${esc(e.evaluator||'—')} | ملاحظات: ${esc(e.notes||'—')}</div><details><summary>تفاصيل بنود التقييم</summary>${ratingCriteria.map(([k,l,max])=>`<div style="padding:5px 0;border-bottom:1px solid #eee"><b>${esc(l)}</b>: ${e.scores?.[k]??0} / ${max}<div class="muted">${esc(e.itemNotes?.[k]||'')}</div></div>`).join('')}</details></div><button class="red" onclick="deleteCoachEvaluation('${e.id}')">حذف</button></div>`).join('')||'<p class="muted">لا توجد تقييمات للمدربين.</p>';
+}
+$('evaluationSearch').oninput=renderCoachEvaluations;
+window.deleteCoachEvaluation=id=>{if(confirm('حذف تقييم المدرب؟')){coachEvaluations=coachEvaluations.filter(e=>e.id!==id);saveExtraData();renderCoachEvaluations()}};
+
+fillLevels();renderRecords();renderCoachList();renderCoachOptions();
+fillCoachSelects();renderViolationRules();renderViolations();renderRatingFields();resetCoachEvaluation();renderCoachEvaluations();
+
+// ===== Professional print / navigation enhancements =====
+function printStandalone(title, bodyHtml){
+  const w=window.open('','_blank');
+  if(!w){alert('يرجى السماح بفتح النوافذ المنبثقة للطباعة، أو استخدام زر الطباعة من المتصفح.');return;}
+  w.document.open();
+  w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title>
+  <style>
+  body{font-family:Tahoma,Arial,sans-serif;color:#222;padding:24px;line-height:1.7}
+  h1,h2{color:#8a650e;margin:0 0 12px}.head{border-bottom:3px solid #d6a21a;padding-bottom:12px;margin-bottom:18px}
+  table{width:100%;border-collapse:collapse;margin:14px 0}td,th{border:1px solid #888;padding:8px;text-align:right}
+  th{background:#f3ead7}.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+  .line{padding:8px 0;border-bottom:1px solid #ddd}.muted{color:#666}
+  @page{size:A4;margin:14mm}@media print{body{padding:0}}
+  </style></head><body><div class="head"><h1>CROCODILE CLUB</h1><h2>${esc(title)}</h2></div>${bodyHtml}
+  <script>window.onload=()=>{setTimeout(()=>window.print(),250)};<\/script></body></html>`);
+  w.document.close();
+}
+function printSwimmerRecord(id){
+ const r=records.find(x=>String(x.id)===String(id));if(!r)return;
+ makeReport(r);
+ const html=$('report').innerHTML;
+ printStandalone('تقييم السباح',html);
+}
+function printCoachProfile(id){
+ const c=coaches.find(x=>String(x.id)===String(id));if(!c)return;
+ const rows=[['الاسم',c.name],['السن',c.age],['رقم الهاتف',c.phone],['المؤهل',c.qualification],['سنوات الخبرة',c.experience],['التخصص / المستويات',c.spec],['نظام الراتب',c.payType==='monthly'?'شهري':'بالساعة'],['سعر الساعة',c.hourRate+' جنيه'],['الراتب الشهري',c.monthlySalary+' جنيه'],['الخصومات',c.deductions+' جنيه']];
+ printStandalone('ملف المدرب',`<table>${rows.map(([k,v])=>`<tr><th>${esc(k)}</th><td>${esc(v||'—')}</td></tr>`).join('')}</table>`);
+}
+function printViolationRecord(id){
+ const v=violations.find(x=>String(x.id)===String(id));if(!v)return;
+ const rows=[['المدرب',v.coachName],['تاريخ المخالفة',v.date],['موضوع المخالفة',v.subject],['الإجراء المتخذ',v.action],['الملاحظات',v.notes]];
+ printStandalone('سجل جزاءات / مخالفات المدربين',`<table>${rows.map(([k,val])=>`<tr><th>${esc(k)}</th><td>${esc(val||'—')}</td></tr>`).join('')}</table>`);
+}
+function printCoachEvaluation(id){
+ const e=coachEvaluations.find(x=>String(x.id)===String(id));if(!e)return;
+ const rows=ratingCriteria.map(([k,label,max])=>`<tr><td>${esc(label)}</td><td>${Number(e.scores?.[k]||0)}</td><td>${max}</td><td>${esc(e.itemNotes?.[k]||'—')}</td></tr>`).join('');
+ const html=`<div class="meta"><div><b>المدرب:</b> ${esc(e.coachName)}</div><div><b>الشهر:</b> ${esc(e.month||e.date||'—')}</div><div><b>المشرف:</b> ${esc(e.evaluator||'—')}</div><div><b>الإجمالي:</b> ${Number(e.total||0).toFixed(1)} / 100</div><div><b>التقدير:</b> ${esc(e.grade||'—')}</div></div><table><thead><tr><th>بند التقييم</th><th>الدرجة</th><th>النهاية العظمى</th><th>ملاحظات</th></tr></thead><tbody>${rows}</tbody></table><p><b>ملاحظات عامة:</b> ${esc(e.notes||'—')}</p>`;
+ printStandalone('تقييم المدرب الشهري',html);
+}
+
+function printCoachEvaluationsByCoach(id){
+ const c=coaches.find(x=>String(x.id)===String(id));if(!c)return;
+ const list=coachEvaluations.filter(e=>String(e.coachId||'')===String(id) || String(e.coachName||'').trim()===String(c.name||'').trim())
+   .sort((a,b)=>String(b.month||b.date||'').localeCompare(String(a.month||a.date||''),'ar'));
+ if(!list.length){alert('لا يوجد تقييم مسجل لهذا المدرب حتى الآن.');return;}
+ const sections=list.map(e=>{
+   const rows=ratingCriteria.map(([k,label,max])=>`<tr><td>${esc(label)}</td><td>${Number(e.scores?.[k]||0)}</td><td>${max}</td><td>${esc(e.itemNotes?.[k]||'—')}</td></tr>`).join('');
+   return `<h2>تقييم شهر ${esc(e.month||e.date||'—')}</h2><div class="meta"><div><b>المشرف:</b> ${esc(e.evaluator||'—')}</div><div><b>الإجمالي:</b> ${Number(e.total||0).toFixed(1)} / 100</div><div><b>التقدير:</b> ${esc(e.grade||'—')}</div></div><table><thead><tr><th>بند التقييم</th><th>الدرجة</th><th>النهاية العظمى</th><th>ملاحظات</th></tr></thead><tbody>${rows}</tbody></table><p><b>ملاحظات عامة:</b> ${esc(e.notes||'—')}</p><hr>`;
+ }).join('');
+ printStandalone('تقييمات المدرب - '+c.name,`<h2>المدرب: ${esc(c.name)}</h2>${sections}`);
+}
+function printCoachViolationsByCoach(id){
+ const c=coaches.find(x=>String(x.id)===String(id));if(!c)return;
+ const list=violations.filter(v=>String(v.coachId||'')===String(id) || String(v.coachName||'').trim()===String(c.name||'').trim())
+   .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+ if(!list.length){alert('لا توجد مخالفات مسجلة لهذا المدرب.');return;}
+ const rows=list.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(v.date||'—')}</td><td>${esc(v.subject||'—')}</td><td>${esc(v.action||'—')}</td><td>${esc(v.notes||'—')}</td></tr>`).join('');
+ printStandalone('سجل مخالفات المدرب - '+c.name,`<h2>المدرب: ${esc(c.name)}</h2><table><thead><tr><th>م</th><th>التاريخ</th><th>موضوع المخالفة</th><th>الإجراء</th><th>ملاحظات</th></tr></thead><tbody>${rows}</tbody></table><p><b>إجمالي المخالفات:</b> ${list.length}</p>`);
+}
+
+function closeCurrentPage(){
+ const active=document.querySelector('main>section:not(.hidden)');
+ if(active && active.id!=='evaluate'){showTab('evaluate');window.scrollTo({top:0,behavior:'smooth'});}
+ else {clearForm();window.scrollTo({top:0,behavior:'smooth'});}
+}
+function installPageTools(){
+ document.querySelectorAll('main>section').forEach(sec=>{
+   if(!sec.querySelector('.page-tools')){
+     const tools=document.createElement('div');tools.className='page-tools no-print';
+     tools.innerHTML='<button type="button" class="close-page" onclick="closeCurrentPage()">إغلاق الصفحة ✕</button>';
+     sec.insertBefore(tools,sec.firstChild);
+   }
+ });
+ if(!$('backToTop')){
+   const b=document.createElement('button');b.id='backToTop';b.type='button';b.title='العودة إلى أعلى الصفحة';b.textContent='↑';
+   b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});document.body.appendChild(b);
+   window.addEventListener('scroll',()=>b.classList.toggle('show',window.scrollY>280),{passive:true});
+ }
+}
+const _renderRecordsProfessional=renderRecords;
+renderRecords=function(){
+ const q=($('search').value||'').toLowerCase();
+ $('recordList').innerHTML=records.filter(r=>(r.name+' '+r.code+' '+r.levelName).toLowerCase().includes(q)).map(r=>`<div class="saved-item"><div><b>${esc(r.name)}</b> — ${esc(r.code)}<div class="muted">${esc(r.levelName)} | ${esc(r.date)}</div></div><div class="actions"><button class="gold" onclick="openRecord('${r.id}')">فتح / تعديل</button><button class="print-btn" onclick="printSwimmerRecord('${r.id}')">طباعة</button><button class="red" onclick="deleteRecord('${r.id}')">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد تقييمات محفوظة.</p>';
+};
+const _renderCoachListProfessional=renderCoachList;
+renderCoachList=function(){
+ const q=($('coachSearch')?.value||'').trim().toLowerCase();
+ const rows=coaches.filter(c=>([c.name,c.phone,c.qualification,c.spec].join(' ').toLowerCase()).includes(q));
+ $('coachList').innerHTML=rows.map(c=>`<div class="saved-item">
+   <div style="flex:1;min-width:180px"><b>${esc(c.name)}</b>
+   <div class="muted">${esc(c.phone||'بدون هاتف')} · ${esc(c.qualification||c.spec||'')}</div>
+   <div class="muted">${c.payType==='monthly'?'راتب شهري: '+(Number(c.monthlySalary)||0)+' جنيه':'بالساعة: '+(Number(c.hourRate)||0)+' جنيه'} · الخبرة: ${esc(c.experience||0)} سنة</div></div>
+   <div class="coach-command-grid">
+    <button type="button" class="open-coach" onclick="editCoachEntry('${String(c.id)}')">فتح الملف</button>
+    <button type="button" class="print-eval" onclick="printCoachEvaluationsByCoach('${String(c.id)}')">طباعة التقييم</button>
+    <button type="button" class="print-violations" onclick="printCoachViolationsByCoach('${String(c.id)}')">طباعة سجل المخالفات</button>
+   </div>
+   <div class="actions"><button class="red" onclick="deleteCoachEntry('${String(c.id)}')">حذف المدرب</button></div>
+  </div>`).join('')||'<p class="muted">لا يوجد مدربون في القائمة.</p>';
+ renderCoachOptions($('coach').value);
+};
+const _renderViolationsProfessional=renderViolations;
+renderViolations=function(){
+ const q=($('violationSearch').value||'').toLowerCase();
+ $('violationList').innerHTML=violations.filter(v=>(v.coachName+' '+v.subject+' '+v.action).toLowerCase().includes(q)).map(v=>`<div class="saved-item"><div><b>${esc(v.coachName)}</b> — ${esc(v.date)}<div><b>المخالفة:</b> ${esc(v.subject)}</div><div><b>الإجراء:</b> ${esc(v.action)}</div><div class="muted">${esc(v.notes||'لا توجد ملاحظات')}</div></div><div class="actions"><button class="light" onclick="editViolation('${v.id}')">تعديل</button><button class="print-btn" onclick="printViolationRecord('${v.id}')">طباعة السجل</button><button class="red" onclick="deleteViolation('${v.id}')">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد مخالفات مسجلة.</p>';
+};
+const _renderCoachEvaluationsProfessional=renderCoachEvaluations;
+renderCoachEvaluations=function(){
+ const q=($('evaluationSearch').value||'').toLowerCase();
+ $('coachEvaluationList').innerHTML=coachEvaluations.filter(e=>(e.coachName+' '+(e.month||'')+' '+e.evaluator).toLowerCase().includes(q)).map(e=>`<div class="saved-item"><div style="flex:1"><b>${esc(e.coachName)}</b> — ${esc(e.month||e.date||'')}<div><b>الإجمالي: ${Number(e.total??0).toFixed(1)} / 100</b> ${e.grade?'<span class="status training">'+esc(e.grade)+'</span>':''}</div><div class="muted">المشرف: ${esc(e.evaluator||'—')} | ملاحظات: ${esc(e.notes||'—')}</div><details><summary>تفاصيل بنود التقييم</summary>${ratingCriteria.map(([k,l,max])=>`<div style="padding:5px 0;border-bottom:1px solid #eee"><b>${esc(l)}</b>: ${e.scores?.[k]??0} / ${max}<div class="muted">${esc(e.itemNotes?.[k]||'')}</div></div>`).join('')}</details></div><div class="actions"><button class="print-btn" onclick="printCoachEvaluation('${e.id}')">طباعة التقييم</button><button class="red" onclick="deleteCoachEvaluation('${e.id}')">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد تقييمات للمدربين.</p>';
+};
+installPageTools();
+renderRecords();renderCoachList();renderViolations();renderCoachEvaluations();
+
+</script></body></html>
